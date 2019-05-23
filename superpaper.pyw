@@ -15,6 +15,7 @@ from threading import Timer, Lock, Thread
 
 from PIL import Image
 from screeninfo import get_monitors
+
 try:
     import wx
     import wx.adv
@@ -26,7 +27,6 @@ elif platform.system() == "Linux":
     # KDE has special needs
     if os.environ.get("DESKTOP_SESSION") == "/usr/share/xsessions/plasma":
         import dbus
-
 
 # Global variables
 
@@ -77,12 +77,14 @@ if LOGGING:
     consoleHandler = logging.StreamHandler()
     g_logger.addHandler(consoleHandler)
 
+
 def custom_exception_handler(exceptiontype, value, tb_var):
     """Log uncaught exceptions."""
     g_logger.exception("Uncaught exceptionn type: %s", str(exceptiontype))
-    g_logger.exception("Exception: %s",str(value))
+    g_logger.exception("Exception: %s", str(value))
     g_logger.exception(str(tb_var))
     # g_logger.exception("Uncaught exception.")
+
 
 def show_message_dialog(message, msg_type="Info"):
     """General purpose info dialog in GUI mode."""
@@ -92,6 +94,7 @@ def show_message_dialog(message, msg_type="Info"):
         dial.ShowModal()
     else:
         pass
+
 
 class GeneralSettingsData(object):
     def __init__(self):
@@ -124,8 +127,7 @@ class GeneralSettingsData(object):
                             # Install exception handler
                             sys.excepthook = custom_exception_handler
                             fileHandler = logging.FileHandler(
-                                "{0}/{1}.log"
-                                .format(PATH, "log"),
+                                "{0}/{1}.log".format(PATH, "log"),
                                 mode="w")
                             g_logger.addHandler(fileHandler)
                             consoleHandler = logging.StreamHandler()
@@ -216,9 +218,6 @@ class GeneralSettingsData(object):
         f.write("set_command={}".format(self.set_command))
 
         f.close()
-
-
-
 
 
 class ProfileData(object):
@@ -346,7 +345,7 @@ class ProfileData(object):
         else:
             ppiArray = []
             for inch, res in zip(inches, RESOLUTION_ARRAY):
-                diagonal_px = math.sqrt(res[0]**2 + res[1]**2)
+                diagonal_px = math.sqrt(res[0] ** 2 + res[1] ** 2)
                 px_per_inch = diagonal_px / inch
                 ppiArray.append(px_per_inch)
             if DEBUG:
@@ -381,7 +380,7 @@ class ProfileData(object):
         if DEBUG:
             g_logger.info(
                 "Bezel px calculation: resulting combined manual offset: {}"
-                .format(self.manual_offsets))
+                    .format(self.manual_offsets))
 
     def NextWallpaperFiles(self):
         return self.file_handler.Next_Wallpaper_Files()
@@ -409,7 +408,7 @@ Use absolute paths for best reliabilty.".format(path)
                         list_of_images += [os.path.join(path, f)
                                            for f in os.listdir(path)
                                            if f.endswith(G_SUPPORTED_IMAGE_EXTENSIONS)
-                                          ]
+                                           ]
                 # Append the list of monitor_i specific files to the list of
                 # lists of images.
                 self.all_files_in_paths.append(list_of_images)
@@ -471,7 +470,7 @@ Use absolute paths for best reliabilty.".format(path)
                 else:
                     g_logger.info(
                         "ImageList.ArrangeList: unknown sortmode: {}"
-                        .format(self.sortmode))
+                            .format(self.sortmode))
 
 
 class CLIProfileData(ProfileData):
@@ -499,7 +498,7 @@ class CLIProfileData(ProfileData):
             self.manual_offsets = nDisplays * [(0, 0)]
         else:
             self.manual_offsets = nDisplays * [(0, 0)]
-            off_pairs_zip = zip(*[iter(offsets)]*2)
+            off_pairs_zip = zip(*[iter(offsets)] * 2)
             off_pairs = [tuple(p) for p in off_pairs_zip]
             for off, i in zip(off_pairs, range(len(self.manual_offsets))):
                 self.manual_offsets[i] = off
@@ -511,7 +510,7 @@ class CLIProfileData(ProfileData):
         self.ppiArrayRelDensity = []
         self.bezels = bezels
         self.bezel_px_offsets = []
-        #self.files = files
+        # self.files = files
         self.files = []
         for item in files:
             self.files.append(os.path.realpath(item))
@@ -523,6 +522,7 @@ class CLIProfileData(ProfileData):
 
     def NextWallpaperFiles(self):
         return self.files
+
 
 class TempProfileData(object):
     def __init__(self):
@@ -614,7 +614,7 @@ class TempProfileData(object):
                     show_message_dialog(msg, "Error")
                     return False
             # if self.sortmode:
-                # No test needed
+            # No test needed
             if self.inches:
                 if self.is_list_float(self.inches):
                     pass
@@ -737,7 +737,6 @@ class TempProfileData(object):
         return valid_pathsarray
 
 
-
 class RepeatedTimer(object):
     # Credit:
     # https://stackoverflow.com/questions/3393612/run-certain-code-every-n-seconds/13151299#13151299
@@ -800,7 +799,7 @@ def getDisplayData():
     if DEBUG:
         g_logger.info(
             "getDisplayData output: nDisplays = {}, {}, {}"
-            .format(
+                .format(
                 nDisplays,
                 RESOLUTION_ARRAY,
                 DISPLAY_OFFSET_ARRAY))
@@ -812,7 +811,7 @@ def getDisplayData():
     if DEBUG:
         g_logger.info(
             "SORTED getDisplayData output: nDisplays = {}, {}, {}"
-            .format(
+                .format(
                 nDisplays,
                 RESOLUTION_ARRAY,
                 DISPLAY_OFFSET_ARRAY))
@@ -826,8 +825,8 @@ def computeCanvas(res_array, offset_array):
     right_edges = []
     bottom_edges = []
     for res, off in zip(res_array, offset_array):
-        right_edges.append(off[0]+res[0])
-        bottom_edges.append(off[1]+res[1])
+        right_edges.append(off[0] + res[0])
+        bottom_edges.append(off[1] + res[1])
     # Right-most edge.
     rightmost = max(right_edges)
     # Bottom-most edge.
@@ -858,7 +857,7 @@ def resizeToFill(img, res):
     trgtRatio = res[0] / res[1]
     # resize along the shorter edge to get an image that is at least of the
     # target size on the shorter edge.
-    if imgRatio < trgtRatio:      # img not wide enough / is too tall
+    if imgRatio < trgtRatio:  # img not wide enough / is too tall
         resizeFactor = res[0] / imgSize[0]
         newSize = (
             round(
@@ -882,18 +881,18 @@ def resizeToFill(img, res):
         # right edge, bottom = top + res[1]) : force correct height
         cropTuple = (
             0,
-            round(extraH/2),
+            round(extraH / 2),
             newSize[0],
-            round(extraH/2) + res[1])
+            round(extraH / 2) + res[1])
         cropped_res = img.crop(cropTuple)
         if cropped_res.size == res:
             return cropped_res
         else:
             g_logger.info(
                 "Error: result image not of correct size. crp:{}, res:{}"
-                .format(cropped_res.size, res))
+                    .format(cropped_res.size, res))
             return -1
-    elif imgRatio >= trgtRatio:      # img not tall enough / is too wide
+    elif imgRatio >= trgtRatio:  # img not tall enough / is too wide
         resizeFactor = res[1] / imgSize[1]
         newSize = (
             round(resizeFactor * imgSize[0]),
@@ -912,9 +911,9 @@ def resizeToFill(img, res):
         # (half of extra from left edge, top edge,
         # right = left + desired width, bottom) : force correct width
         cropTuple = (
-            round(extraW/2),
+            round(extraW / 2),
             0,
-            round(extraW/2) + res[0],
+            round(extraW / 2) + res[0],
             newSize[1])
         cropped_res = img.crop(cropTuple)
         if cropped_res.size == res:
@@ -922,7 +921,7 @@ def resizeToFill(img, res):
         else:
             g_logger.info(
                 "Error: result image not of correct size. crp:{}, res:{}"
-                .format(cropped_res.size, res))
+                    .format(cropped_res.size, res))
             return -1
 
 
@@ -939,8 +938,8 @@ def get_all_centers(resarr_eff, manual_offsets):
     if len(manual_offsets) < len(resarr_eff):
         g_logger.info("get_all_centers: Not enough manual offsets: \
             {} for displays: {}".format(
-                len(manual_offsets),
-                len(resarr_eff)))
+            len(manual_offsets),
+            len(resarr_eff)))
     else:
         for i in range(len(resarr_eff)):
             horiz_radius = get_horizontal_radius(resarr_eff[i])
@@ -1246,6 +1245,7 @@ def special_image_cropper(outputfile):
         id += 1
     return img_names
 
+
 def remove_old_temp_files(outputfile):
     opbase = os.path.basename(outputfile)
     opname = os.path.splitext(opbase)[0]
@@ -1266,6 +1266,7 @@ def remove_old_temp_files(outputfile):
             if match_string in f:
                 print(f)
                 os.remove(os.path.join(TEMP_PATH, f))
+
 
 def kdeplasma_actions(outputfile):
     script = """
@@ -1408,7 +1409,7 @@ def readActiveProfile():
     if os.path.isfile(fname):
         f = open(fname, "r")
         try:
-            for line in f:     # loop through line by line
+            for line in f:  # loop through line by line
                 line.rstrip("\r\n")
                 profname = line
                 if DEBUG:
@@ -1438,10 +1439,9 @@ def writeActiveProfile(profname):
     f.close()
 
 
-
 # TRAY ICON APPLET definitions
-    # Credit:
-    # https://stackoverflow.com/questions/6389580/quick-and-easy-trayicon-with-python/48401917#48401917
+# Credit:
+# https://stackoverflow.com/questions/6389580/quick-and-easy-trayicon-with-python/48401917#48401917
 
 try:
 
@@ -1450,6 +1450,7 @@ try:
         menu.Bind(wx.EVT_MENU, lambda event: func(event, *args), id=item.GetId())
         menu.Append(item)
         return item
+
 
     class ConfigFrame(wx.Frame):
         def __init__(self, parent_tray_obj):
@@ -1471,8 +1472,8 @@ try:
             self.frame = parent
             self.parent_tray_obj = parent_tray_obj
             self.sizer_main = wx.BoxSizer(wx.HORIZONTAL)
-            self.sizer_left = wx.BoxSizer(wx.VERTICAL) # buttons and prof sel
-            self.sizer_right = wx.BoxSizer(wx.VERTICAL) # option fields
+            self.sizer_left = wx.BoxSizer(wx.VERTICAL)  # buttons and prof sel
+            self.sizer_right = wx.BoxSizer(wx.VERTICAL)  # option fields
             self.sizer_paths = wx.BoxSizer(wx.VERTICAL)
             self.sizer_paths_buttons = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -1502,7 +1503,8 @@ try:
             tc_width = 160
             self.tc_name = wx.TextCtrl(pnl, -1, size=(tc_width, -1))
             self.ch_span = wx.Choice(pnl, -1, name="SpanChoice", size=(tc_width, -1), choices=["Single", "Multi"])
-            self.ch_sort = wx.Choice(pnl, -1, name="SortChoice", size=(tc_width, -1), choices=["Shuffle", "Alphabetical"])
+            self.ch_sort = wx.Choice(pnl, -1, name="SortChoice", size=(tc_width, -1),
+                                     choices=["Shuffle", "Alphabetical"])
             self.tc_delay = wx.TextCtrl(pnl, -1, size=(tc_width, -1))
             self.tc_offsets = wx.TextCtrl(pnl, -1, size=(tc_width, -1))
             self.tc_inches = wx.TextCtrl(pnl, -1, size=(tc_width, -1))
@@ -1512,33 +1514,32 @@ try:
             self.cb_slideshow = wx.CheckBox(pnl, -1, "")  # Put the title in the left column
             self.sizer_grid_options.AddMany(
                 [
-                    (st_name, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
-                    (self.tc_name, 0, wx.ALIGN_LEFT|wx.ALL),
-                    (st_span, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_name, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
+                    (self.tc_name, 0, wx.ALIGN_LEFT | wx.ALL),
+                    (st_span, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.ch_span, 0, wx.ALIGN_LEFT),
-                    (st_slide, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
-                    (self.cb_slideshow, 0, wx.ALIGN_LEFT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
-                    (st_sort, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_slide, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
+                    (self.cb_slideshow, 0, wx.ALIGN_LEFT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
+                    (st_sort, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.ch_sort, 0, wx.ALIGN_LEFT),
-                    (st_del, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_del, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.tc_delay, 0, wx.ALIGN_LEFT),
-                    (st_off, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_off, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.tc_offsets, 0, wx.ALIGN_LEFT),
-                    (st_in, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_in, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.tc_inches, 0, wx.ALIGN_LEFT),
                     # (st_ppi, 0, wx.ALIGN_RIGHT),
                     # (self.tc_ppis, 0, wx.ALIGN_LEFT),
-                    (st_bez, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_bez, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.tc_bez, 0, wx.ALIGN_LEFT),
-                    (st_hk, 0, wx.ALIGN_RIGHT|wx.ALL|wx.ALIGN_CENTER_VERTICAL),
+                    (st_hk, 0, wx.ALIGN_RIGHT | wx.ALL | wx.ALIGN_CENTER_VERTICAL),
                     (self.tc_hotkey, 0, wx.ALIGN_LEFT),
                 ]
             )
 
             # Paths display
             self.pathsWidget_default = self.createPathsWidget()
-            self.sizer_paths.Add(self.pathsWidget_default, 0, wx.CENTER|wx.ALL, 5)
-
+            self.sizer_paths.Add(self.pathsWidget_default, 0, wx.CENTER | wx.ALL, 5)
 
             # Left column buttons
             self.button_apply = wx.Button(self, label="Apply")
@@ -1566,29 +1567,28 @@ try:
             self.button_add_paths.Bind(wx.EVT_BUTTON, self.onAddDisplay)
             self.button_remove_paths.Bind(wx.EVT_BUTTON, self.onRemoveDisplay)
 
-            self.sizer_paths_buttons.Add(self.button_add_paths, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_paths_buttons.Add(self.button_remove_paths, 0, wx.CENTER|wx.ALL, 5)
-
+            self.sizer_paths_buttons.Add(self.button_add_paths, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_paths_buttons.Add(self.button_remove_paths, 0, wx.CENTER | wx.ALL, 5)
 
             # Left add items
-            self.sizer_left.Add(self.choiceProfile, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_apply, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_new, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_delete, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_save, 0, wx.CENTER|wx.ALL, 5)
+            self.sizer_left.Add(self.choiceProfile, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_apply, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_new, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_delete, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_save, 0, wx.CENTER | wx.ALL, 5)
             # self.sizer_left.Add(self.button_settings, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_testimage, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_help, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_left.Add(self.button_close, 0, wx.CENTER|wx.ALL, 5)
+            self.sizer_left.Add(self.button_testimage, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_help, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_left.Add(self.button_close, 0, wx.CENTER | wx.ALL, 5)
 
             # Right add items
-            self.sizer_right.Add(self.sizer_grid_options, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_right.Add(self.sizer_paths, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_right.Add(self.sizer_paths_buttons, 0, wx.CENTER|wx.ALL, 5)
+            self.sizer_right.Add(self.sizer_grid_options, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_right.Add(self.sizer_paths, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_right.Add(self.sizer_paths_buttons, 0, wx.CENTER | wx.ALL, 5)
 
             # Collect items at main sizer
-            self.sizer_main.Add(self.sizer_left, 0, wx.CENTER|wx.EXPAND)
-            self.sizer_main.Add(self.sizer_right, 0, wx.CENTER|wx.EXPAND)
+            self.sizer_main.Add(self.sizer_left, 0, wx.CENTER | wx.EXPAND)
+            self.sizer_main.Add(self.sizer_right, 0, wx.CENTER | wx.EXPAND)
 
             self.SetSizer(self.sizer_main)
             self.sizer_main.Fit(parent)
@@ -1605,17 +1605,17 @@ try:
 
         def createPathsWidget(self):
             new_paths_widget = wx.BoxSizer(wx.HORIZONTAL)
-            st_new_paths = wx.StaticText(self, -1, "display" + str(len(self.paths_controls)+1) + "paths")
+            st_new_paths = wx.StaticText(self, -1, "display" + str(len(self.paths_controls) + 1) + "paths")
             tc_new_paths = wx.TextCtrl(self, -1, size=(500, -1))
             self.paths_controls.append(tc_new_paths)
 
-            new_paths_widget.Add(st_new_paths, 0, wx.CENTER|wx.ALL, 5)
-            new_paths_widget.Add(tc_new_paths, 0, wx.CENTER|wx.ALL|wx.EXPAND, 5)
+            new_paths_widget.Add(st_new_paths, 0, wx.CENTER | wx.ALL, 5)
+            new_paths_widget.Add(tc_new_paths, 0, wx.CENTER | wx.ALL | wx.EXPAND, 5)
 
-            button_name = "browse-"+str(len(self.paths_controls)-1)
+            button_name = "browse-" + str(len(self.paths_controls) - 1)
             button_new_browse = wx.Button(self, label="Browse", name=button_name)
             button_new_browse.Bind(wx.EVT_BUTTON, self.onBrowsePaths)
-            new_paths_widget.Add(button_new_browse, 0, wx.CENTER|wx.ALL, 5)
+            new_paths_widget.Add(button_new_browse, 0, wx.CENTER | wx.ALL, 5)
 
             return new_paths_widget
 
@@ -1685,7 +1685,6 @@ try:
             else:
                 return ""
 
-
         # Path display related functions.
         def show_list_paths(self, paths_list):
             # Format a list of paths into the set style of listed paths.
@@ -1697,14 +1696,14 @@ try:
 
         def onAddDisplay(self, event):
             new_disp_widget = self.createPathsWidget()
-            self.sizer_paths.Add(new_disp_widget, 0, wx.CENTER|wx.ALL, 5)
+            self.sizer_paths.Add(new_disp_widget, 0, wx.CENTER | wx.ALL, 5)
             self.frame.fSizer.Layout()
             self.frame.Fit()
 
         def onRemoveDisplay(self, event):
             if self.sizer_paths.GetChildren():
-                self.sizer_paths.Hide(len(self.paths_controls)-1)
-                self.sizer_paths.Remove(len(self.paths_controls)-1)
+                self.sizer_paths.Hide(len(self.paths_controls) - 1)
+                self.sizer_paths.Remove(len(self.paths_controls) - 1)
                 del self.paths_controls[-1]
                 self.frame.fSizer.Layout()
                 self.frame.Fit()
@@ -1712,7 +1711,6 @@ try:
         def onBrowsePaths(self, event):
             dlg = BrowsePaths(None, self, event)
             dlg.ShowModal()
-
 
         # Top level button definitions
         def onClose(self, event):
@@ -1773,7 +1771,7 @@ try:
                 return
             # Open confirmation dialog
             dlg = wx.MessageDialog(None,
-                                   "Do you want to delete profile:"+ profname +"?",
+                                   "Do you want to delete profile:" + profname + "?",
                                    'Confirm Delete',
                                    wx.YES_NO | wx.ICON_QUESTION)
             result = dlg.ShowModal()
@@ -1852,7 +1850,7 @@ try:
                                      inches,
                                      bezels,
                                      flat_offsets,
-                                    )
+                                     )
             changeWallpaperJob(profile)
 
         def onHelp(self, event):
@@ -1873,9 +1871,9 @@ try:
                                           # style=wx.DIRCTRL_MULTIPLE,
                                           # style=0,
                                           size=(450, 550))
-            sizer_browse.Add(self.dir3, 0, wx.CENTER|wx.ALL|wx.EXPAND, 5)
+            sizer_browse.Add(self.dir3, 0, wx.CENTER | wx.ALL | wx.EXPAND, 5)
             self.tc_paths = wx.TextCtrl(self, -1, size=(450, -1))
-            sizer_textfield.Add(self.tc_paths, 0, wx.CENTER|wx.ALL, 5)
+            sizer_textfield.Add(self.tc_paths, 0, wx.CENTER | wx.ALL, 5)
 
             self.button_add = wx.Button(self, label="Add")
             self.button_remove = wx.Button(self, label="Remove")
@@ -1887,14 +1885,14 @@ try:
             self.button_ok.Bind(wx.EVT_BUTTON, self.onOk)
             self.button_cancel.Bind(wx.EVT_BUTTON, self.onCancel)
 
-            sizer_buttons.Add(self.button_add, 0, wx.CENTER|wx.ALL, 5)
-            sizer_buttons.Add(self.button_remove, 0, wx.CENTER|wx.ALL, 5)
-            sizer_buttons.Add(self.button_ok, 0, wx.CENTER|wx.ALL, 5)
-            sizer_buttons.Add(self.button_cancel, 0, wx.CENTER|wx.ALL, 5)
+            sizer_buttons.Add(self.button_add, 0, wx.CENTER | wx.ALL, 5)
+            sizer_buttons.Add(self.button_remove, 0, wx.CENTER | wx.ALL, 5)
+            sizer_buttons.Add(self.button_ok, 0, wx.CENTER | wx.ALL, 5)
+            sizer_buttons.Add(self.button_cancel, 0, wx.CENTER | wx.ALL, 5)
 
-            sizer_main.Add(sizer_browse, 5, wx.ALL|wx.ALIGN_CENTER|wx.EXPAND)
-            sizer_main.Add(sizer_textfield, 5, wx.ALL|wx.ALIGN_CENTER)
-            sizer_main.Add(sizer_buttons, 5, wx.ALL|wx.ALIGN_CENTER)
+            sizer_main.Add(sizer_browse, 5, wx.ALL | wx.ALIGN_CENTER | wx.EXPAND)
+            sizer_main.Add(sizer_textfield, 5, wx.ALL | wx.ALIGN_CENTER)
+            sizer_main.Add(sizer_buttons, 5, wx.ALL | wx.ALIGN_CENTER)
             self.SetSizer(sizer_main)
             self.SetAutoLayout(True)
 
@@ -1937,7 +1935,6 @@ try:
             self.Destroy()
 
 
-
     class SettingsFrame(wx.Frame):
         def __init__(self, parent_tray_obj):
             wx.Frame.__init__(self, parent=None, title="Superpaper General Settings")
@@ -1950,6 +1947,7 @@ try:
             self.Layout()
             self.Center()
             self.Show()
+
 
     class SettingsPanel(wx.Panel):
         def __init__(self, parent, parent_tray_obj):
@@ -1990,10 +1988,10 @@ try:
             self.button_close = wx.Button(self, label="Close")
             self.button_save.Bind(wx.EVT_BUTTON, self.onSave)
             self.button_close.Bind(wx.EVT_BUTTON, self.onClose)
-            self.sizer_buttons.Add(self.button_save, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_buttons.Add(self.button_close, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_main.Add(self.sizer_grid_settings, 0, wx.CENTER|wx.EXPAND)
-            self.sizer_main.Add(self.sizer_buttons, 0, wx.CENTER|wx.EXPAND)
+            self.sizer_buttons.Add(self.button_save, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_buttons.Add(self.button_close, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_main.Add(self.sizer_grid_settings, 0, wx.CENTER | wx.EXPAND)
+            self.sizer_main.Add(self.sizer_buttons, 0, wx.CENTER | wx.EXPAND)
             self.SetSizer(self.sizer_main)
             self.sizer_main.Fit(parent)
 
@@ -2051,6 +2049,7 @@ try:
             self.Center()
             self.Show()
 
+
     class HelpPanel(wx.Panel):
         def __init__(self, parent):
             wx.Panel.__init__(self, parent)
@@ -2067,9 +2066,9 @@ try:
             self.cb_show_at_start.SetValue(show_help)
             self.button_close = wx.Button(self, label="Close")
             self.button_close.Bind(wx.EVT_BUTTON, self.onClose)
-            self.sizer_buttons.Add(st_show_at_start, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_buttons.Add(self.cb_show_at_start, 0, wx.CENTER|wx.ALL, 5)
-            self.sizer_buttons.Add(self.button_close, 0, wx.CENTER|wx.ALL, 5)
+            self.sizer_buttons.Add(st_show_at_start, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_buttons.Add(self.cb_show_at_start, 0, wx.CENTER | wx.ALL, 5)
+            self.sizer_buttons.Add(self.button_close, 0, wx.CENTER | wx.ALL, 5)
 
             help_str = """
 How to use Superpaper:
@@ -2129,10 +2128,10 @@ Tips:
        Display diagonals, offsets and bezels need to be entered.
 """
             st_help = wx.StaticText(self, -1, help_str)
-            self.sizer_helpcontent.Add(st_help, 0, wx.EXPAND|wx.CENTER|wx.ALL, 5)
+            self.sizer_helpcontent.Add(st_help, 0, wx.EXPAND | wx.CENTER | wx.ALL, 5)
 
-            self.sizer_main.Add(self.sizer_helpcontent, 0, wx.CENTER|wx.EXPAND)
-            self.sizer_main.Add(self.sizer_buttons, 0, wx.CENTER|wx.EXPAND)
+            self.sizer_main.Add(self.sizer_helpcontent, 0, wx.CENTER | wx.EXPAND)
+            self.sizer_main.Add(self.sizer_buttons, 0, wx.CENTER | wx.EXPAND)
             self.SetSizer(self.sizer_main)
             self.sizer_main.Fit(parent)
 
@@ -2150,7 +2149,6 @@ Tips:
                     current_settings.show_help = False
                     current_settings.Save()
             self.frame.Close(True)
-
 
 
     class TaskBarIcon(wx.adv.TaskBarIcon):
@@ -2200,8 +2198,6 @@ Tips:
                 config_frame = ConfigFrame(self)
                 help_frame = HelpFrame()
 
-
-
         def register_hotkeys(self):
             if self.g_settings.use_hotkeys is True:
                 try:
@@ -2239,7 +2235,6 @@ Tips:
                                         if DEBUG:
                                             g_logger.info("Could not unreg hotkey '{}'".format(binding))
                             self.seen_binding = set()
-
 
                         # register general bindings
                         if self.g_settings.hkBinding_next not in self.seen_binding:
@@ -2280,7 +2275,7 @@ Tips:
                                 g_logger.info(
                                     "Registering binding: \
                                     {} for profile: {}"
-                                    .format(profile.hkBinding, profile.name))
+                                        .format(profile.hkBinding, profile.name))
                             if (profile.hkBinding is not None and
                                     profile.hkBinding not in self.seen_binding):
                                 try:
@@ -2302,8 +2297,6 @@ It is already registered for another action.".format(profile.hkBinding, profile.
                         if DEBUG:
                             g_logger.info("Coulnd't register hotkeys, exception:")
                             g_logger.info(sys.exc_info()[0])
-
-
 
         def profile_consumer(self, event, hotkey, profile):
             if DEBUG:
@@ -2391,11 +2384,11 @@ It is already registered for another action.".format(profile.hkBinding, profile.
                 if DEBUG:
                     g_logger.info(
                         "Check if the starting profile is already running: {}"
-                        .format(profile.name))
+                            .format(profile.name))
                     g_logger.info(
                         "name check: {}, {}"
-                        .format(profile.name,
-                                self.active_profile.name))
+                            .format(profile.name,
+                                    self.active_profile.name))
                 if profile.name == self.active_profile.name:
                     self.next_wallpaper(event)
                     return 0
@@ -2407,12 +2400,12 @@ It is already registered for another action.".format(profile.hkBinding, profile.
                         if DEBUG:
                             g_logger.info(
                                 "Running quick profile job with profile: {}"
-                                .format(profile.name))
+                                    .format(profile.name))
                         quickProfileJob(profile)
                         if DEBUG:
                             g_logger.info(
                                 "Starting timed profile job with profile: {}"
-                                .format(profile.name))
+                                    .format(profile.name))
                         self.repeating_timer = runProfileJob(profile)
                         self.active_profile = profile
                         writeActiveProfile(profile.name)
@@ -2428,12 +2421,12 @@ It is already registered for another action.".format(profile.hkBinding, profile.
                     if DEBUG:
                         g_logger.info(
                             "Running quick profile job with profile: {}"
-                            .format(profile.name))
+                                .format(profile.name))
                     quickProfileJob(profile)
                     if DEBUG:
                         g_logger.info(
                             "Starting timed profile job with profile: {}"
-                            .format(profile.name))
+                                .format(profile.name))
                     self.repeating_timer = runProfileJob(profile)
                     self.active_profile = profile
                     writeActiveProfile(profile.name)
@@ -2478,25 +2471,25 @@ It is already registered for another action.".format(profile.hkBinding, profile.
             # Credit for AboutDiaglog example to Jan Bodnar of
             # http://zetcode.com/wxpython/dialogs/
             description = (
-                "Superpaper is an advanced multi monitor wallpaper\n"
-                +"manager for Unix and Windows operating systems.\n"
-                +"Features include setting a single or multiple image\n"
-                +"wallpaper, pixel per inch and bezel corrections,\n"
-                +"manual pixel offsets for tuning, slideshow with\n"
-                +"configurable file order, multiple path support and more."
-                )
+                    "Superpaper is an advanced multi monitor wallpaper\n"
+                    + "manager for Unix and Windows operating systems.\n"
+                    + "Features include setting a single or multiple image\n"
+                    + "wallpaper, pixel per inch and bezel corrections,\n"
+                    + "manual pixel offsets for tuning, slideshow with\n"
+                    + "configurable file order, multiple path support and more."
+            )
 
             licence = (
-                "Superpaper is free software; you can redistribute\n"
-                +"it and/or modify it under the terms of the MIT"
-                +" License.\n\n"
-                +"Superpaper is distributed in the hope that it will"
-                +" be useful,\n"
-                +"but WITHOUT ANY WARRANTY; without even the implied"
-                +" warranty of\n"
-                +"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-                +"See the MIT License for more details."
-                )
+                    "Superpaper is free software; you can redistribute\n"
+                    + "it and/or modify it under the terms of the MIT"
+                    + " License.\n\n"
+                    + "Superpaper is distributed in the hope that it will"
+                    + " be useful,\n"
+                    + "but WITHOUT ANY WARRANTY; without even the implied"
+                    + " warranty of\n"
+                    + "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+                    + "See the MIT License for more details."
+            )
             artists = "Icons kindly provided by Icons8 https://icons8.com"
 
             info = wx.adv.AboutDialogInfo()
@@ -2517,6 +2510,7 @@ It is already registered for another action.".format(profile.hkBinding, profile.
             self.rt_stop()
             wx.CallAfter(self.Destroy)
             self.frame.Close()
+
 
     class App(wx.App):
 
@@ -2609,7 +2603,7 @@ Exiting.")
                                  args.inches,
                                  args.bezels,
                                  args.offsets,
-                                )
+                                 )
         job_thread = changeWallpaperJob(profile)
         job_thread.join()
 
